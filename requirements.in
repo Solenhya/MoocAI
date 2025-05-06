@@ -1,2 +1,6 @@
 pymongo
 python-dotenv
+fastapi["standard"]
+jose
+sqlalchemy
+alembic
