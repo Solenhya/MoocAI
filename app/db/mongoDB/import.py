@@ -87,5 +87,5 @@ def DoFullImport():
 
 
 if __name__=="__main__":
-    #DoFullImport()
-    ExtractMessage(os.getenv("MONGO_DBNAME"),"threads","messages")
+    DoFullImport()
+    #ExtractMessage(os.getenv("MONGO_DBNAME"),"threads","messages")
