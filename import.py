@@ -1,6 +1,6 @@
 import pymongo
 import json
-import mongoConnection
+import MoocAI.app.db.mongoDB.mongoConnection as mongoConnection
 import os
 
 #Une fonction pour importer depuis un fichier json
@@ -46,9 +46,9 @@ def stevefunk(content,client,dataBase,collection):
     result = client[dataBase][collection].find_one({'_id' : id})
     if result is None:
         #Retire la structure d'arbre avant de l'inserer dans la collection
-        content.pop("children")
-        content.pop("endorsed_responses")
-        content.pop("non_endorsed_responses")
+        content.pop("children",None)
+        content.pop("endorsed_reponses",None)
+        content.pop("non_endorsed_reponses",None)
         client[dataBase][collection].insert_one(content)
     
     #Itere recursivement sur les enfants
@@ -87,5 +87,5 @@ def DoFullImport():
 
 
 if __name__=="__main__":
-    DoFullImport()
-    #ExtractMessage("mooc","fils","messages")
+    #DoFullImport()
+    ExtractMessage(os.getenv("MONGO_DBNAME"),"threads","messages")
