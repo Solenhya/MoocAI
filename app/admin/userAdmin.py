@@ -1,8 +1,8 @@
 from fastapi import APIRouter , Depends
 from ..userManagements import userAccess
 from ..db.mongoDB.mongoConnection import Find ,GetConnection
-from ..dependencies import require_roles
-router = APIRouter(dependencies=[Depends(require_roles(["admin"]))])
+from ..dependencies import require_roles_any
+router = APIRouter(dependencies=[Depends(require_roles_any(["admin"]))])
 
 @router.get("/user_admin")
 async def getadminPage():
