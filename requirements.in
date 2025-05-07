@@ -1,6 +1,8 @@
 pymongo
 python-dotenv
 fastapi[standard]
-jose
+python-jose
 sqlalchemy
 alembic
+passlib
+bcrypt

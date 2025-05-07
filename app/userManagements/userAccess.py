@@ -1,22 +1,20 @@
-from db.postgre.models import User
+from ..db.mongoDB.mongoConnection import GetConnection , Find 
+from .security import get_password_hash , verify_password
+import os
 
+def get_user(useName):  
+    found = Find("users",filter={"username":useName})
+    if(len(found)>0):
+        return found[0]
 
+def sign_user(useName,password):
+    """Assume que l'user n'existe pas"""
+    hashedPassword = get_password_hash(password)
+    databaseName = os.getenv("MONGO_DBNAME")
+    document = {"username":useName,"hashed_password":hashedPassword}
+    with GetConnection() as client:
+        client[databaseName]["users"].insert_one(document)
 
-def get_user(session,userEmail):
-    user = session.query(User).filter_by(userEmail = userEmail).first()
-    session.close()
-    return user
-
-def save_user(session,userEmail,hashedPassword,userAccess="Not"):
-    user = User(    userEmail = userEmail,
-                userPassword=hashedPassword,
-                userRight=userAccess)
-    session.add(user)
-    session.commit()
-    session.close()
-
-def getAllUser(session):
-    users = session.query(User).all()
-    for user in users:
-        print(f"user : {user}")
-    return users
+def get_users():
+    found = Find("users",projection={"username":1,"roles":1})
+    return found
