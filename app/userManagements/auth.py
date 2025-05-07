@@ -15,7 +15,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm):
     if not user or not verify_password(form_data.password, user["hashed_password"]):
         raise HTTPException(status_code=401, detail="Incorrect username or password") 
     # Create and return token
-    access_token = create_access_token(data={"sub": form_data.username})
+    access_token = create_access_token(data={"sub": form_data.username,"roles":user["roles"]})
     return {"access_token": access_token, "token_type": "bearer"}
 
 # Custom exception for when token is missing or invalid
@@ -36,5 +36,18 @@ def get_current_user(request:Request):
         if username is None:
             raise CredentialsException(detail="Token does not contain a valid username")
         return username
+    except JWTError as e:
+        raise CredentialsException(detail=f"JWT decoding error: {str(e)}")
+    
+def get_user_data(request:Request):
+    token = request.cookies.get("token")
+    if not token:
+        raise CredentialsException(detail="Token is missing or empty")
+    # Use JWT decoding and validation logic
+    try:
+        user_data = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")])
+        if user_data is None:
+            raise CredentialsException(detail="Token does not contain a valid username")
+        return user_data
     except JWTError as e:
         raise CredentialsException(detail=f"JWT decoding error: {str(e)}")
