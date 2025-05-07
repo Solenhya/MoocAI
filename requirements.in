@@ -1,6 +1,6 @@
 pymongo
 python-dotenv
-fastapi["standard"]
+fastapi[standard]
 jose
 sqlalchemy
 alembic

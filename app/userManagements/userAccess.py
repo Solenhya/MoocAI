@@ -1,4 +1,4 @@
-from ..db.models import User
+from db.postgre.models import User
 
 
 
