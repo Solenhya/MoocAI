@@ -8,6 +8,7 @@ model = "snowflake-arctic-embed:22m"
 url = "http://localhost:11434/api/embed"
 
 #Length 384 .... donc pas utilisable sur la meme table
+#Juste passer le texte a embedder et recupérer le retour
 def get_embedding(text:str):
     payload = {
     "model": model,
@@ -15,10 +16,10 @@ def get_embedding(text:str):
     "input": text
     }
     response = requests.post(url, json=payload)
-    retour = response.json()["embeddings"]
+    retour = response.json()["embeddings"][0]
     return retour,response
 
 if __name__ == "__main__":
     test = "Bonjour le monde"
     retour,reponse = get_embedding(test)
-    print(len(retour[0]))
+    print(len(retour))
