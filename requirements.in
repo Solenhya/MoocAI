@@ -6,3 +6,4 @@ sqlalchemy
 alembic
 passlib
 bcrypt
+pgvector
