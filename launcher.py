@@ -1,6 +1,6 @@
 from app.db.postgre import embedding
 from dotenv import load_dotenv
-import os
+
 
 
 

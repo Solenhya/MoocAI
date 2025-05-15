@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()  # take environment variables
-key = os.getenv("GEMINI_API_KEY")
+key = os.getenv("SECRET_KEY_GEMINI")
 client = genai.Client(api_key=key)
 
 #Taille 768

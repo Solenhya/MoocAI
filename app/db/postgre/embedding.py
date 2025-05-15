@@ -5,10 +5,11 @@ sys.path.append(parent_dir)
 
 from db.postgre.models import MessageVectorization
 from services.gemini import getembedding
-from db_connection import get_session
+from db.postgre.db_connection import get_session
 from sqlalchemy.dialects.postgresql import insert
 from db.mongoDB import mongoConnection
 
+# embeddding avec le modèle Gemini   
 def getembed_one(message: str):
     message_vector = MessageVectorization(message=message)
     # Récupérer l'embedding
@@ -24,20 +25,22 @@ def insert_embed_(db,id_message: str, message: str):
     db.commit()
 
 
-def insert_embed_one(db, messages: list):
+def insert_embed_one(db, message_id: str, message: str):
+    # Récupérer l'embedding
+    message_embed = getembedding(message)
     messages_vectorization = {
-        'id_message': messages.id,
-        'message': messages.message,
-        'embedding_message': messages.embedding_message,
-        'date_vectorization': messages.date
+        'id_message': message_id,
+        'message': message,
+        'embedding_message': message_embed
     }
 
     insert_messages = insert(MessageVectorization).values(messages_vectorization)
     insert_messages = insert_messages.on_conflict_do_update(
-        indexelements=['id'],
-        set={
-            'name': insert_messages.excluded.name,
-            'email': insert_messages.excluded.email
+        index_elements=['id_message'],
+        set_={
+            'message': insert_messages.excluded.message,
+            'embedding_message': insert_messages.excluded.embedding_message,
+            'date_vectorization': insert_messages.excluded.date_vectorization
         }
     )
 
@@ -48,8 +51,12 @@ def insert_embed_one(db, messages: list):
 # en utilisant la fonction d'insertion
 def insert_emded_all():
     client = mongoConnection.GetConnection()
+    print("Connection MongoDB OK")
     # Récupérer les messages de MongoDB
     cussor_messages = mongoConnection.Find("messages", projection={"_id": 1, "body":1}, client=client)
+    print(cussor_messages)
+    print("Récupération des messages de MongoDB OK")
+    # Afficher le nombre de messages récupérés
     # Insérer les messages dans PostgreSQL
     with get_session() as db:
         compteur = 0
@@ -61,3 +68,11 @@ def insert_emded_all():
     client.close()
 
 
+if __name__ == "__main__":
+    # Exemple d'utilisation
+    # message = "Bonjour, comment ça va ?"
+    # embedding = getembed_one(message)
+    # print(len(embedding))
+    # Afficher l'embedding
+    # print(embedding)
+    insert_emded_all()

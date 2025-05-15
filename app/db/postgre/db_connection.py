@@ -1,4 +1,4 @@
-from database import SessionLocal
+from db.postgre.database import SessionLocal
 from sqlalchemy import text
 from contextlib import contextmanager
 

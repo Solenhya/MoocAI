@@ -108,4 +108,7 @@ uvicorn api.routes:app --reload
 ```bash
   # Installation de l'extension pgvectot
   pip install pgvector
+
+  # Installer sentence-transformers
+  pip install -U sentence-transformers
 ```

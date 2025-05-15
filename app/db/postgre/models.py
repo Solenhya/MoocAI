@@ -22,4 +22,3 @@ class MessageVectorization(Base):
     embedding_message = Column(Vector(768), nullable=False) # adapter au modèle Gemini
     date_vectorization = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
-
