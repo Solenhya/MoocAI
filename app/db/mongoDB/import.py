@@ -24,8 +24,9 @@ def ImportMany(dbName,collectionName,filePath):
                 print(f"{count} data processed")
             count+=1
 
+#TODO Ajouter l'ajout d'un identifiant de séquence 
 #Une fontion recursive pour extraire les message des thread et les inserer dans une nouvelle collection
-def stevefunk(content,client,dataBase,collection):
+def stevefunk(content,client,dataBase,collection,sequence_number):
     #Extrait les informations du content qu'on est en train de traiter
     username = content.get("username", "")
     courseid = content.get("course_id", "")
@@ -49,17 +50,20 @@ def stevefunk(content,client,dataBase,collection):
         content.pop("children",None)
         content.pop("endorsed_reponses",None)
         content.pop("non_endorsed_reponses",None)
+        content["sequence_number"]=sequence_number
+        sequence_number+=1
         client[dataBase][collection].insert_one(content)
     
     #Itere recursivement sur les enfants
     for doc in children:
-        stevefunk(doc,client,dataBase,collection)
+        sequence_number=stevefunk(doc,client,dataBase,collection,sequence_number)
     
     for doc in endorsed_responses:
-        stevefunk(doc,client,dataBase,collection)
+        sequence_number=stevefunk(doc,client,dataBase,collection,sequence_number)
 
     for doc in non_endorsed_responses:
-        stevefunk(doc,client,dataBase,collection)
+        sequence_number=stevefunk(doc,client,dataBase,collection,sequence_number)
+    return sequence_number
 
 
 def ExtractMessage(dbName,baseCollection,OutCollection):
@@ -72,10 +76,12 @@ def ExtractMessage(dbName,baseCollection,OutCollection):
         filter=filter,
         projection=project
         )
+        last_sequence = 1
         for doc in result:
             content = doc["content"]
             print("-" * 100, flush=True)
-            stevefunk(content,client,dbName,OutCollection)
+            last_sequence = stevefunk(content,client,dbName,OutCollection,last_sequence)
+        client[dbName]["sequence"].insert_one({"origines":"messages","sequence":last_sequence})
 
 def DoFullImport():
     filePath = "MOOC_forum.json"
