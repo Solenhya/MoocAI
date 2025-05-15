@@ -18,7 +18,7 @@ from pgvector.sqlalchemy import Vector
 class MessageVectorization(Base):
     __tablename__= "message_vectorization"
     id_message = Column(String, primary_key=True, index=True)
-    message = Column(String, index=True, nullable=False)
+    message = Column(String, nullable=False)
     embedding_message = Column(Vector(768), nullable=False) # adapter au modèle Gemini
     date_vectorization = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
