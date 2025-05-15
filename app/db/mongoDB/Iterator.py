@@ -1,5 +1,5 @@
 import math
-from mongoConnection import GetConnection
+from .mongoConnection import GetConnection
 
 def Iterator(collection,filter,projection,session,dbName,chunksize=10000):
     count = collection.count_documents(filter)
@@ -10,8 +10,9 @@ def Iterator(collection,filter,projection,session,dbName,chunksize=10000):
         yield cursor
         start_from+=chunksize
 
-def IterateCheckPoint(collection,filter,projection,session,dbName,chunksize=1000,last_seen_seq=None):
+def IterateCheckPoint(collectionName,filter,projection,session,dbName,chunksize=1000,last_seen_seq=None):
     query_filter = dict(filter)  # Avoid mutating original filter
+    collection = session[dbName][collectionName]
     if last_seen_seq:
         query_filter["seq_number"] = {"$gt": last_seen_seq}  # Query for seq_number greater than last_seen_seq
     while True:  # This starts an infinite loop
