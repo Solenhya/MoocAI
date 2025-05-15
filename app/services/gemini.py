@@ -15,3 +15,12 @@ def getembedding(text:str):
         config=types.EmbedContentConfig(task_type="SEMANTIC_SIMILARITY")
     )
     return result.embeddings[0].values
+
+
+if __name__ == "__main__":
+    # Exemple d'utilisation
+    text = "Bonjour, comment ça va ?"
+    embedding = getembedding(text)
+    print(len(embedding))
+    # Afficher l'embedding
+    print(embedding)

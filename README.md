@@ -104,3 +104,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 uvicorn api.routes:app --reload
 ```
+## Instalation
+```bash
+  # Installation de l'extension pgvectot
+  pip install pgvector
+```
