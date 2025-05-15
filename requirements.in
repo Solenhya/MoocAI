@@ -8,3 +8,5 @@ passlib
 bcrypt
 pgvector
 requests
+transformers
+torch
