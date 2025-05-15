@@ -6,5 +6,6 @@ sqlalchemy
 alembic
 passlib
 bcrypt
+pgvector
 requests
 google-genai
