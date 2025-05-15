@@ -1,4 +1,4 @@
-from os.path import  dirname, abspath
+from os.path import  dirname
 import os
 import sys
 
@@ -7,18 +7,18 @@ sys.path.append(dirname(dirname(__file__)))  # this moves up from alembic/ to ap
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app')))
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, DateTime
 from postgre.database import Base
 from sqlalchemy.sql import func
 
+# Importer le type VECTOR
+from pgvector.sqlalchemy import Vector
 
 # créer  une classe de modèle pour la table de vectorisation des messages
 class MessageVectorization(Base):
     __tablename__= "message_vectorization"
-    id_message = Column(Integer, primary_key=True, index=True)
+    id_message = Column(String, primary_key=True, index=True)
     message = Column(String, index=True, nullable=False)
-    embedding_message = Column(String, index=True, nullable=False)
+    embedding_message = Column(Vector(768), nullable=False) # adapter au modèle Gemini
     date_vectorization = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-
 
