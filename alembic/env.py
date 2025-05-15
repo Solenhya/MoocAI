@@ -5,17 +5,41 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from db.postgre.postgres_connection import engine
-from db.postgre import db
-
-from db.postgre.models import user
+from os.path import  dirname
 import os
+import sys
+from pathlib import Path
+
+# Add the app directory to sys.path so Alembic can find your modules
+BASE_DIR = Path(__file__).resolve().parent.parent  # MoocAI/
+APP_DIR = BASE_DIR / "app"
+sys.path.append(str(APP_DIR))
+
+from dotenv import load_dotenv
+from app.db.postgre.database import Base  # <- ton Base
+from app.db.postgre.models import  MessageVectorization # importe le.s  modèle.s
 from dotenv import load_dotenv
 
+
+# Charger les variables d'environnement à partir du fichier .env
+load_dotenv()
+
+# Charger les variables d'environnement
+HOST = os.getenv("HOST")
+USER = os.getenv("USER")  
+DATABASE = os.getenv("DATABASE")
+PORT = os.getenv("PORT")
+PASSWORD = os.getenv("PASSWORD")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+# L' URL de la base de données est construite à partir des variables d'environnement
+
+DATABASE_URL = f"postgresql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}"
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -26,12 +50,9 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from os.path import  dirname
-import sys
-# Add the app directory to sys.path so Alembic can find your modules
-sys.path.append(dirname(dirname(__file__)))  # this moves up from alembic/ to app/
-from db.postgre import models
-target_metadata = db.postgre.models
+
+from app.db.postgre import models
+target_metadata = models.Base.metadata  # <- le Base.metadata du système de gestion de base de données
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

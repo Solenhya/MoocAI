@@ -89,7 +89,7 @@ smartmooc/
 ├── frontend/
 │   └── templates/
 ├── notebooks/
-│   └── exploration.ipynb
+│   └── exploration.ipynbzéa
 ├── README.md
 └── requirements.txt
 ```
