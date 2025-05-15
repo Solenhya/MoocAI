@@ -67,6 +67,19 @@ def insert_emded_all():
                 print(f"Inserted {compteur} messages into postgresql")
     client.close()
 
+def insert_all_checkpoint():
+    filename = "checkpoint.txt"
+    checkpoint=None
+    if os.path.exists(filename):
+        with open("checkpoint.txt", "r") as file:
+            checkpoint = file.read()
+    
+    client = mongoConnection.GetConnection()
+    curssor_messages = mongoConnection.Find("messages",projection={"_id":1,"body":1},client=client)
+    with get_session() as db:
+        compteur=0
+        
+
 
 if __name__ == "__main__":
     # Exemple d'utilisation
