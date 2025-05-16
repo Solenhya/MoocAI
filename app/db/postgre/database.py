@@ -31,7 +31,7 @@ if not DATABASE_URL:
     raise ValueError("DATABASE_URL n'est pas définie dans la variable d'environnement.")
 
 # Créer un engine SQLAlchemy
-engine = create_engine(DATABASE_URL, echo = True) # echo=True pour afficher les requêtes SQL dans la console
+engine = create_engine(DATABASE_URL)#, echo = True) # echo=True pour afficher les requêtes SQL dans la console
 
 # Créer une session SQLAlchemy
 SessionLocal = sessionmaker(bind=engine)

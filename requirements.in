@@ -1,10 +1,13 @@
 pymongo
 python-dotenv
 fastapi[standard]
+pyasn1-modules==0.2.6
 python-jose
 sqlalchemy
 alembic
 passlib
 bcrypt
+pgvector
 requests
 google-genai
+psycopg2

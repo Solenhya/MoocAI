@@ -36,5 +36,10 @@ def Find(collection,filter={},projection={},client=None):
         return retour
     return cursor
 
+def GetCount(collectionName,dbName,session,filter={}):
+    collection = session[dbName][collectionName]
+    count = collection.count_documents(filter)
+    return count
+
 if __name__=="__main__":
     pass
