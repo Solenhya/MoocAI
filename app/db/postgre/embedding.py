@@ -9,6 +9,7 @@ from db.postgre.db_connection import get_session
 from sqlalchemy.dialects.postgresql import insert
 from db.mongoDB import mongoConnection
 from db.mongoDB import iterator
+from utils.time_estimation import EstimateRemaining
 import time
 
 
@@ -108,7 +109,7 @@ def insert_all_checkpoint():
                 #On les insere un par un
                 timer = insert_embed_one(db, doc["_id"], doc["body"],waiting=waiting,callBefore=timer)
                 currentTime = time.time()
-                timeleft = Estimate(start=start,current=compteur,required=numberDoc,timed=currentTime-timestart)
+                timeleft = EstimateRemaining(start=start,current=compteur,required=numberDoc,timed=currentTime-timestart)
                 compteur+=1
                 if compteur % 10 == 0:
                     print(f"Inserted {compteur}/{numberDoc} messages into postgresql en {currentTime-timestart:.2f}s il reste environ {timeleft:.2f}s")
@@ -116,13 +117,6 @@ def insert_all_checkpoint():
             with open(filename,"w") as file:
                 file.write(str(batch[-1]["seq_number"]))
 
-def Estimate(start,current,required,timed):
-    left = required-current
-    done= current-start
-    if(done>0):
-        timeleft = timed*(left/done)
-        return timeleft
-    return "Inconnue"
 
 if __name__ == "__main__":
     # Exemple d'utilisation

@@ -16,16 +16,13 @@ try:
             {"_id": doc["_id"]},  # match by the document's _id
             {"$set": {"seq_number": seq_number}}  # set the sequential field
         ))
-        
         # Increment the counter
         seq_number += 1
-
         # If the list grows large, execute in batches to prevent memory overload
         if len(updates) >= 1000:  # Adjust batch size as needed
             collection.bulk_write(updates)
             updates = []  # Clear the list for the next batch
             print(f"Updated in bulk {seq_number} done")
-
     # Final batch
     if updates:
         collection.bulk_write(updates)
