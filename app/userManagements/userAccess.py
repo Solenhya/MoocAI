@@ -11,7 +11,7 @@ def sign_user(useName,password):
     """Assume que l'user n'existe pas"""
     hashedPassword = get_password_hash(password)
     databaseName = os.getenv("MONGO_DBNAME")
-    document = {"username":useName,"hashed_password":hashedPassword,"roles":[]}
+    document = {"username":useName,"hashed_password":hashedPassword,"roles":["guest"]}
     with GetConnection() as client:
         client[databaseName]["users"].insert_one(document)
 

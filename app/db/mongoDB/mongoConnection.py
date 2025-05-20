@@ -3,6 +3,14 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+from pymongo import UpdateOne
+
+def InsertBulk(listedictId,listeValue,valueName,client,dbName,collectionName):
+    """Une fonction d'insertion en bulk qui prend en parametres deux listes la premiere un dictionaire qui contient"""
+    operations = [UpdateOne({"_id":dictId["_id"]},{"$set": {valueName: new_value}}) for dictId, new_value in zip(listedictId, listeValue)]
+    collection = client[dbName][collectionName]
+    collection.bulk_write(operations)
+
 def GetConnection():
     path = "mongodb://"+os.getenv("MONGO_USER")+":"+ os.getenv("MONGO_PASSWORD")+"@"+os.getenv("MONGO_HOST")
     return pymongo.MongoClient(path)
