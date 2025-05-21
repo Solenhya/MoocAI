@@ -11,3 +11,5 @@ pgvector
 requests
 google-genai
 psycopg2
+transformers
+torch

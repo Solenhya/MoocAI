@@ -2,6 +2,7 @@ from db.postgre.database import SessionLocal
 from sqlalchemy import text
 from contextlib import contextmanager
 
+#Fonction a utiliser
 @contextmanager
 def get_session():
     """create a new session to the database"""
@@ -15,7 +16,7 @@ def get_session():
     finally:
         db.close()
 
-
+#Fonction a déprécier
 def get_connection():
     """maje la fonction de connexion à la base de données"""
     # Test de la connexion à la base de données
