@@ -9,7 +9,7 @@ from db.postgre.db_connection import get_session
 from db.postgre.models import MessageVectorization
 from pgvector.sqlalchemy import Vector
 
-def getSimilar(text:str,limit:int,session):
+def GetSimilar(text:str,limit:int,session):
     # Query vector (a list or numpy array of floats)
     query_vector = gemini.getembedding(text)
 

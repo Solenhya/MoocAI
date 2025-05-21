@@ -1,4 +1,4 @@
-from fastapi import APIRouter , Depends , Request
+from fastapi import APIRouter , Depends , Request , HTTPException
 from ..userManagements import userAccess
 from ..db.mongoDB.mongoConnection import Find ,GetConnection
 from ..dependencies import require_roles_any
@@ -18,3 +18,13 @@ async def PageLogin(request:Request,userData = Depends(require_roles_any(["admin
 async def FilterMessage(request:Request,userData=Depends(require_roles_any(["admin","users"]))):
 
     return templates.TemplateResponse("filtre.html",{"request":request})
+
+@router.get("/message/{message_id}")
+async def ShowMessage(request:Request,message_id:str,userData=Depends(require_roles_any(["admin","users"]))):
+    client = GetConnection()
+    dbName=os.getenv("MONGO_DBNAME")
+    message = client[dbName]["messages"].find_one(filter={"_id":message_id})
+    if not message:
+        raise HTTPException(status_code=404, detail="Message not found")
+    return templates.TemplateResponse("showMessage.html",{"request":request,"message":message})
+    pass

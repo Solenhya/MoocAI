@@ -1,0 +1,32 @@
+{% extends "connectedTemplate.html" %}
+
+{% block script %}  <script src="/static/messages.js"></script>
+<script>
+    async function fetchFilteredMessages(queryText) {
+        const messagesContainer = document.getElementById("messages");
+        messagesContainer.textContent="Chargement des messages"
+        const url = `/filterMessage?text=${encodeURIComponent(queryText)}`;
+        const response = await fetch(url);
+        const messages = await response.json();
+        displayMessages(messages);
+    }
+
+// Call the exposed displayMessages function
+  window.addEventListener("DOMContentLoaded", () => {
+    document.getElementById('searchText').addEventListener('click', function() {
+    const input = document.querySelector('.form-control').value;
+    fetchFilteredMessages(input)
+    });
+  });
+</script>{% endblock %}
+
+{% block main %}
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Votre requete" aria-label="Recipient's username" aria-describedby="searchText">
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" type="button" id="searchText">Submit</button>
+    </div>
+  </div>
+<h2>Messages</h2>
+<div id="messages">Vous trouverez ici la liste des messages</div>
+{% endblock %}
