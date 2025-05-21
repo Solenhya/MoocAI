@@ -2,6 +2,7 @@ from fastapi import Depends ,HTTPException
 from typing import List
 from .userManagements.auth import get_user_data
 
+
 def require_roles_any(required_roles: List[str]):
     def role_checker(user_data=Depends(get_user_data)):
         user_roles = user_data.get("roles", [])

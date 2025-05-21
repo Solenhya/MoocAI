@@ -23,6 +23,5 @@ def launchSentiment():
             print(f"    Code: {text}")
 
 
-
 if __name__ == "__main__":
     launchSentiment()

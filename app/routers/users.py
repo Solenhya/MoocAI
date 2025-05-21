@@ -3,7 +3,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse,HTMLResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.status import HTTP_303_SEE_OTHER
-
+from ..dependencies import require_roles_any
 from ..userManagements import auth,userAccess
 from pathlib import Path
 router = APIRouter()
@@ -37,6 +37,15 @@ async def CreateUser(request: Request,userName:str = Form(...),userPassword:str 
     
     userAccess.sign_user(userName,userPassword)
     response = RedirectResponse(url="/login", status_code=HTTP_303_SEE_OTHER)
+    return response
+
+@router.get("/disconnect")
+async def disconnect(request:Request,userData=Depends(require_roles_any(["admin","guest"]))):
+    """Supprime le cookie de tokens
+    Devrait etre post mais les <a> sont cancer avec le besoin de faire un form pour envoyer en post
+    """
+    response = RedirectResponse(url="/login",status_code=HTTP_303_SEE_OTHER)
+    response.delete_cookie(key="token")
     return response
 
 @router.get("/secret")
