@@ -12,11 +12,14 @@ window.addEventListener("DOMContentLoaded", () => {
         messageRow.className = "message-row";
         messageRow.id=message._id;
         messageRow.textContent = `${index + 1}. ${message.body}`;
-        messagesContainer.appendChild(messageRow);
         const buttonRow = document.createElement("button");
         buttonRow.id=`button-${message._id}`;
         buttonRow.textContent = `Voir`;
+        buttonRow.addEventListener("click", () => {
+        window.location.href = `/message/${message._id}`;
+          });
         messageRow.append(buttonRow);
+        messagesContainer.appendChild(messageRow);
       });
     }
   
