@@ -11,7 +11,7 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 from fastapi.responses import RedirectResponse
 
 
-roles = ["admin","guest"]
+roles = ["admin","guest","users"]
 @router.get("/user_admin")
 async def getadminPage(request:Request):
     #DO i use find or abstraction ? 
@@ -38,4 +38,4 @@ async def postAdmin(request:Request):
             if new_role in roles:
                 collection.update_one({"username":user["username"]},{"$set": {"roles": [new_role]}})
                 #Peut enregistrer les changements et les présenter dans une page avant de retourner a l'accueil
-    return RedirectResponse(url="/")
+    return RedirectResponse(url="/accueil",status_code=303)
