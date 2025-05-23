@@ -20,8 +20,8 @@ async def connect(request:Request,form_data: OAuth2PasswordRequestForm=Depends()
     try:
         auth_value =await auth.login_for_access_token(form_data)
     except ValueError as e:
-        return templates.TemplateResponse("error.html",{"request":request})
-    response = RedirectResponse(url="/secret", status_code=HTTP_303_SEE_OTHER)
+        return templates.TemplateResponse("error.html",{"request":request,"detail":e})
+    response = RedirectResponse(url="/accueil", status_code=HTTP_303_SEE_OTHER)
     response.set_cookie(key="token", value=auth_value["access_token"])
     return response
 

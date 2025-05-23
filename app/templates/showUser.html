@@ -1,0 +1,45 @@
+{% extends "connectedTemplate.html" %}
+
+{% block script %}<script src="/static/messages.js"></script>
+<script>
+    async function fetchUserMessages(user) {
+        const messagesContainer = document.getElementById("messages");
+        messagesContainer.textContent="Chargement des messages"
+
+        try {
+        const url = `/user_messages/${user}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Erreur lors du chargement des messages.");
+        }
+
+        const respJson = await response.json();
+        const messages = respJson["messages"];
+        displayMessages(messages);
+
+    } catch (error) {
+        messagesContainer.textContent = error.message;
+    }
+    }
+
+// Call the exposed displayMessages function
+  window.addEventListener("DOMContentLoaded", () => {
+    const username = document.getElementById('user_name').dataset.username;
+    fetchUserMessages(username);
+  });
+</script>
+{% endblock %}
+
+{% block main %}
+<h4 id="user_name" data-username="{{ user.username }}">User : {{user.username}}</h4>
+{% if tronq > 0 %}
+  <p>Analyse de sentiment tronqué manque : {{ tronq }}</p>
+{% endif %}
+<h5>Sentiment de l'utilisateur :</h5>
+<p>Moyenne : {{sentiment_values.average.label}} (Score : {{sentiment_values.average.score}})</p>
+<p>Plus negatif : {{sentiment_values.min.label}} (Score : {{sentiment_values.min.score}})</p>
+<p>Plus positif : {{sentiment_values.max.label}} (Score : {{sentiment_values.max.score}})</p>
+<h5>Liste des messages:</h5>
+<div id="messages"></div>
+{% endblock %}

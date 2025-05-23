@@ -2,6 +2,8 @@
 
 {% block main %}
 <h4>Message {{message._id}}</h4>
+<h5>de : <a href="/user/{{message.username}}">{{message.username}}</a></h5>
 <div></div>
 <p>{{message.body}}</p>
+<p>Sentiment du message : {{sentiment_label}} (Score : {{message.sentiment_tabularisai}})</p>
 {% endblock %}
