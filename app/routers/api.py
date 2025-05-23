@@ -44,6 +44,7 @@ def CollectResultsFilter(collection,listeId):
     return retour
 
 #Une fonction qui prend un parameters un filtre et qui va remplir les documents qui n'ont pas encore l'évaluation de sentiment
+#Se restreint a une certaines limite et renvoi combien n'ont pas été traité
 def GenerateSentiment(collection,filter):
     #Ajout du filtre d'absence d'évaluation
     query_filter = dict(filter)
@@ -51,7 +52,7 @@ def GenerateSentiment(collection,filter):
     resultsNoSent = collection.find(query_filter,{"_id":1,"body":1})
     listeDoc = list(resultsNoSent)
     length = len(listeDoc)
-    if(length):
+    if(length<1):
         return
     print(f"Sentiment non traité : {length}")
     if length>100:
@@ -61,6 +62,7 @@ def GenerateSentiment(collection,filter):
     listeSentiment = GetSentimentValue(listeBodyNoSent) 
     #Fait l'insertion
     for i in range(len(listeIdNoSent)):
+        print(f"Updated : {i}")
         collection.update_one(
         {"_id": listeIdNoSent[i]},
         {"$set": {"sentiment_tabularisai": listeSentiment[i]}}

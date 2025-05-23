@@ -42,6 +42,8 @@ def GetSentiment(text:str):
 
 #Récupere le sentiment des textes entre -2 et 2
 def GetSentimentValue(texts):
+    if len(texts)<1:
+        return ""
     inputs = GetTokenizer()(texts, return_tensors="pt", truncation=True, padding=True, max_length=512)
     with torch.no_grad():
         outputs = GetModel()(**inputs)
