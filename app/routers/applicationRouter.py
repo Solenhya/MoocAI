@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent  # points to /app
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 from fastapi.responses import RedirectResponse
 
-from .api import GetUserStats,CollectResultsUser
+from .api import GetUserStats,CollectResultsUser , GenerateSentiment
 
 @router.get("/accueil",tags=["présentation"])
 async def PageLogin(request:Request,userData = Depends(require_roles_any(["admin","guest","users"]))):
@@ -27,16 +27,20 @@ async def FilterMessage(request:Request,userData=Depends(require_roles_any(["adm
 async def ShowMessage(request:Request,message_id:str,userData=Depends(require_roles_any(["admin","users"]))):
     client = GetConnection()
     dbName=os.getenv("MONGO_DBNAME")
-    message = client[dbName]["messages"].find_one(filter={"_id":message_id})
-    sentimentLabel = GetMessageSentiment(message_id,client,dbName)
+    collection = client[dbName]["messages"]
+    GenerateSentiment(collection,{"_id":message_id})
+    message = collection.find_one(filter={"_id":message_id})
+    sentimentLabel = GetMessageSentimentLabel(message_id,client,dbName)
     if not message:
         raise HTTPException(status_code=404, detail="Message not found")
     return templates.TemplateResponse("showMessage.html",{"request":request,"message":message,"sentiment_label":sentimentLabel})
 
 
-def GetMessageSentiment(id,client,dbName):
+def GetMessageSentimentLabel(id,client,dbName):
     collection = client[dbName]["messages"]
+    GenerateSentiment(collection,{"_id":id})
     message = collection.find_one({"_id":id},{"_id":1,"body":1,"sentiment_tabularisai":1})
+    print(message)
     sentiment = message["sentiment_tabularisai"]
     if not sentiment:
         sentiment = GetSentimentValue([message["body"]])

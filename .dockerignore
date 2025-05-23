@@ -90,3 +90,6 @@ venv/
 
 #Fichier data
 *.json
+
+#Les notebooks
+*.ipynb
