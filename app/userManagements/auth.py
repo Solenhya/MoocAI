@@ -1,5 +1,6 @@
 from fastapi import HTTPException , status , Depends ,Request
 from fastapi.security import OAuth2PasswordRequestForm,HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.responses import RedirectResponse
 from .security import verify_password, create_access_token
 from .userAccess import get_user
 from jose import JWTError,jwt
@@ -10,7 +11,6 @@ import os
 security = HTTPBearer()
 
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm):
-
     user = get_user(form_data.username)
     if not user or not verify_password(form_data.password, user["hashed_password"]):
         raise HTTPException(status_code=401, detail="Incorrect username or password") 
@@ -42,6 +42,8 @@ def get_current_user(request:Request):
 def get_user_data(request:Request):
     token = request.cookies.get("token")
     if not token:
+        response = RedirectResponse(url="/login",status_code=401)
+        return response
         raise CredentialsException(detail="Token is missing or empty")
     # Use JWT decoding and validation logic
     try:

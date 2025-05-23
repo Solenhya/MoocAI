@@ -2,8 +2,6 @@ from app.db.postgre import embedding
 from dotenv import load_dotenv
 
 
-
-
 def main():
     try:
         # Load environment variables from .env file
